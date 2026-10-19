@@ -3,328 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق وِرْد</title>
+    <title>تطبيق وِرْد - المصحف الشريف</title>
 
-    <!-- PWA Meta Tags & Manifest Link -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0066cc">
-    <meta name="description" content="تطبيق وِرْد - منصة متكاملة للقراءة والتسميع والألعاب الدينية">
+    <meta name="theme-color" content="#004d40">
 
-    <!-- Apple Touch Icons -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+    <!-- استيراد خط المصحف العثماني الأصلي -->
     <style>
-        :root {
-            --primary-color: #0066cc;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #e0e0e0;
-            --error-color: #dc3545;
+        @font-face {
+            font-family: 'UthmanicHafs';
+            src: url('https://www.quranflash.com/fonts/KFGQPCUthmanicScriptHafsRegular.woff2') format('woff2');
         }
 
-        [data-theme="dark"] {
-            --primary-color: #4dabf7;
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --border-color: #333333;
+        :root {
+            --primary: #004d40;
+            --secondary: #00796b;
+            --bg: #f9fbe7;
+            --card-bg: #ffffff;
+            --text: #212121;
+            --accent: #d32f2f;
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'UthmanicHafs', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
             padding: 0;
-            padding-bottom: 140px;
-            transition: background 0.3s, color 0.3s;
+            padding-bottom: 120px; /* مساحة للشريط السفلي */
         }
 
         header {
-            background-color: var(--card-bg);
+            background-color: var(--primary);
+            color: white;
             padding: 15px;
             text-align: center;
-            border-bottom: 1px solid var(--border-color);
+            font-size: 1.4rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-        }
-
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             padding: 15px;
         }
 
-        .tab-content {
+        .section-view {
             display: none;
         }
-
-        .tab-content.active {
+        .section-view.active {
             display: block;
         }
 
-        .card {
+        /* الفهرس */
+        .surah-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .surah-card {
+            background: var(--card-bg);
+            border: 1px solid #b2dfdb;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1.1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .surah-card:hover {
+            background: #e0f2f1;
+            transform: translateY(-2px);
+        }
+
+        /* ترويسة السورة */
+        .surah-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #b2dfdb;
+        }
+
+        /* نص السورة بالخط العثماني */
+        .quran-text-box {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            line-height: 2.3;
+            font-size: 1.6rem;
+            text-align: justify;
+            border: 1px solid #b2dfdb;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+            margin-bottom: 20px;
+        }
+
+        .ayah-word {
+            display: inline;
+            margin-left: 5px;
+            transition: color 0.3s;
+        }
+
+        .ayah-word.error {
+            color: var(--accent);
+            text-decoration: underline wavy var(--accent);
+            background-color: #ffebee;
+        }
+
+        /* لوحة التسميع */
+        .listening-panel {
             background: var(--card-bg);
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #b2dfdb;
+            margin-top: 15px;
         }
 
-        .select-box {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-color);
-            font-size: 1rem;
-            margin-bottom: 15px;
-        }
-
-        .mic-btn {
-            background-color: var(--primary-color);
+        .mic-btn-large {
+            background-color: var(--secondary);
             color: white;
             border: none;
-            width: 75px;
-            height: 75px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             font-size: 1.8rem;
             cursor: pointer;
-            transition: all 0.3s;
+            margin: 15px auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 10px auto;
-            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: 0.3s;
         }
 
-        .mic-btn.recording {
-            background-color: var(--error-color);
+        .mic-btn-large.recording {
+            background-color: var(--accent);
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
 
-        .timer-display {
-            font-size: 0.9rem;
-            color: var(--primary-color);
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        .output-box {
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            min-height: 80px;
-            max-height: 150px;
-            overflow-y: auto;
-            text-align: right;
-            font-size: 1.1rem;
-            margin-top: 15px;
-        }
-
-        .audio-player-bar {
-            position: fixed;
-            bottom: 60px;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            z-index: 99;
-        }
-
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .audio-controls audio {
-            height: 35px;
-            max-width: 200px;
-        }
-
-        .bottom-nav {
+        /* شريط الخيارات السفلي المطور */
+        .bottom-actions-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 60px;
             background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
+            border-top: 2px solid #b2dfdb;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-around;
             align-items: center;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
             z-index: 100;
         }
 
-        .nav-item {
+        .action-btn {
             background: none;
             border: none;
-            color: #888;
+            color: var(--primary);
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
+            font-family: 'UthmanicHafs', Arial, sans-serif;
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        .nav-item span {
-            font-size: 1.2rem;
-            margin-bottom: 2px;
+        .action-btn span {
+            font-size: 1.4rem;
+            margin-bottom: 3px;
         }
 
-        .nav-item.active {
-            color: var(--primary-color);
-            font-weight: bold;
+        .action-btn:hover {
+            color: var(--secondary);
         }
 
-        .option-btn {
+        /* مشغل الصوت */
+        .audio-player-bar {
+            position: fixed;
+            bottom: 65px;
+            left: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            z-index: 99;
+        }
+
+        .audio-player-bar audio {
+            height: 35px;
+            width: 60%;
+        }
+
+        /* نافذة اختيار القارئ */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+        .modal-content button {
             width: 100%;
             padding: 10px;
             margin: 5px 0;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-color);
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            text-align: right;
-        }
-
-        .option-btn:hover {
-            background: var(--bg-color);
-        }
-
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-color);
+            font-family: 'UthmanicHafs';
+            font-size: 1.1rem;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1 id="headerTitle">وِرْد - القراءة والتسميع</h1>
-    </header>
+    <header id="mainHeader">وِرْد - المصحف الشريف</header>
 
     <div class="container">
         
-        <!-- قسم القراءة والتسميع -->
-        <section id="readTab" class="tab-content active">
-            <div class="card">
-                <h3>اختر القارئ</h3>
-                <select id="reciterSelect" class="select-box" onchange="updateAudioSource()">
-                    <option value="afs">الشيخ مشاري العفاسي</option>
-                    <option value="basit">الشيخ عبد الباسط عبد الصمد</option>
-                    <option value="maher">الشيخ ماهر المعيقلي</option>
-                </select>
+        <!-- القسم الأول: فهرس السور -->
+        <div id="indexSection" class="section-view active">
+            <h2 style="text-align: center; font-family: 'UthmanicHafs';">فهرس السور</h2>
+            <div id="surahGrid" class="surah-grid"></div>
+        </div>
 
-                <h3>اختر السورة</h3>
-                <select id="surahSelect" class="select-box" onchange="updateAudioSource()">
-                    <!-- يتم تعبئة السور تلقائياً -->
-                </select>
+        <!-- القسم الثاني: عرض السورة -->
+        <div id="surahViewSection" class="section-view">
+            <div class="surah-header">
+                <button onclick="backToIndex()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; font-family:'UthmanicHafs'; color:var(--primary);">⬅ العودة للفهرس</button>
+                <h3 id="currentSurahTitle" style="margin:0; font-family:'UthmanicHafs';">سورة الفاتحة</h3>
             </div>
 
-            <div class="card" style="text-align: center;">
-                <h3>التسميع الذكي (5 دقائق)</h3>
-                <p style="font-size: 0.9rem; color: #666;" id="currentSurahLabel">السورة المختارة: الفاتحة</p>
-                
-                <button id="micBtn" class="mic-btn" onclick="toggleListening()">🎤</button>
-                <div id="timerDisplay" class="timer-display">05:00</div>
-                <div id="statusText" style="font-size:0.85rem; color:#888; margin-top:5px;">اضغط لبدء الجلسة</div>
-                
-                <div id="outputBox" class="output-box">النص المسموع سيظهر هنا...</div>
-            </div>
-        </section>
+            <!-- نص السورة بالخط العثماني -->
+            <div id="quranTextBox" class="quran-text-box"></div>
 
-        <!-- قسم الألعاب الدينية -->
-        <section id="gamesTab" class="tab-content">
-            <div class="card">
-                <h3>مسابقة المعلومات القرآنية</h3>
-                <p id="quizQuestion">ما هي السورة التي تسمى بعروس القرآن؟</p>
-                <button class="option-btn" onclick="checkAnswer(false)">سورة يس</button>
-                <button class="option-btn" onclick="checkAnswer(true)">سورة الرحمن</button>
-                <button class="option-btn" onclick="checkAnswer(false)">سورة الواقعة</button>
-                <div id="quizResult" style="margin-top: 10px; font-weight: bold;"></div>
+            <!-- لوحة التسميع الذكي -->
+            <div id="listeningPanel" class="listening-panel" style="display: none;">
+                <h4 style="margin:0; color:var(--secondary);">جلسة التسميع (وقت لامتناهي)</h4>
+                <p id="recogStatus" style="font-size: 0.9rem; color: #555;">اضغط الميكروفون وابدأ القراءة...</p>
+                <button id="micBtn" class="mic-btn-large" onclick="toggleListeningSession()">🎙️</button>
+                <div id="liveOutput" style="font-size: 1.1rem; color: var(--primary); margin-top:10px; min-height: 40px;"></div>
+                <button onclick="closeListeningMode()" style="background:#d32f2f; color:white; border:none; padding:5px 15px; border-radius:5px; cursor:pointer; margin-top:10px; font-family:'UthmanicHafs';">إنهاء التسميع</button>
             </div>
-        </section>
-
-        <!-- قسم الإعدادات -->
-        <section id="settingsTab" class="tab-content">
-            <div class="card">
-                <h3>الإعدادات العامة</h3>
-                <div class="setting-row">
-                    <span>الوضع الداكن (Dark Mode)</span>
-                    <button onclick="toggleTheme()" style="padding: 5px 10px;">تبديل</button>
-                </div>
-                <div class="setting-row">
-                    <span>تنبيهات الخطأ الصوتية</span>
-                    <input type="checkbox" id="soundAlertToggle" checked>
-                </div>
-            </div>
-        </section>
+        </div>
 
     </div>
 
-    <!-- مشغل الصوت أسفل الشاشة -->
-    <div class="audio-player-bar">
-        <div class="player-info">
-            <div style="font-size: 1.5rem;">🎧</div>
-            <div>
-                <div id="playerReciterName" style="font-weight: bold; font-size:0.9rem;">مشاري العفاسي</div>
-                <div id="playerSurahName" style="font-size:0.75rem; color:#777;">الفاتحة</div>
-            </div>
+    <!-- مشغل الصوت المدمج -->
+    <div class="audio-player-bar" id="audioBar" style="display:none;">
+        <div>
+            <span id="playerTitle" style="font-size: 0.85rem; font-weight:bold;">الشيخ: العفاسي</span>
         </div>
-        <div class="audio-controls">
-            <audio id="audioPlayer" controls>
-                <source id="audioSource" src="https://server8.mp3quran.net/afs/001.mp3" type="audio/mpeg">
-            </audio>
-        </div>
+        <audio id="mainAudioPlayer" controls></audio>
+        <button onclick="closeAudioPlayer()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem;">✖</button>
     </div>
 
-    <!-- شريط التنقل السفلي -->
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('readTab', 'وِرْد - القراءة والتسميع', this)">
-            <span>📖</span>
-            القراءة والتسميع
+    <!-- شريط الخيارات السفلي للسورة (استماع - تسميع - تنزيل) -->
+    <div id="bottomActionsBar" class="bottom-actions-bar" style="display: none;">
+        <button class="action-btn" onclick="openReciterModal()">
+            <span>🎧</span>
+            استماع
         </button>
-        <button class="nav-item" onclick="switchTab('gamesTab', 'الألعاب الدينية', this)">
-            <span>🎮</span>
-            الألعاب الدينية
+        <button class="action-btn" onclick="startListeningMode()">
+            <span>🎙️</span>
+            تسميع
         </button>
-        <button class="nav-item" onclick="switchTab('settingsTab', 'الإعدادات', this)">
-            <span>⚙️</span>
-            الإعدادات
+        <button class="action-btn" onclick="downloadCurrentSurah()">
+            <span>📥</span>
+            تنزيل
         </button>
-    </nav>
+    </div>
+
+    <!-- نافذة اختيار القارئ -->
+    <div id="reciterModal" class="modal">
+        <div class="modal-content">
+            <h3>اختر القارئ الكريم</h3>
+            <button onclick="selectReciter('afs', 'مشاري العفاسي')">مشاري العفاسي</button>
+            <button onclick="selectReciter('basit', 'عبد الباسط عبد الصمد')">عبد الباسط عبد الصمد</button>
+            <button onclick="selectReciter('maher', 'ماهر المعيقلي')">ماهر المعيقلي</button>
+            <button onclick="selectReciter('husary', 'محمود خليل الحصري')">محمود خليل الحصري</button>
+            <br>
+            <button onclick="closeReciterModal()" style="background:#757575;">إلغاء</button>
+        </div>
+    </div>
 
     <script>
-        const surahs = [
+        const surahsData = [
             "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
             "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
             "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
@@ -335,86 +332,132 @@
             "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
             "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
             "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
-            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "المعون", "الماعون", "الكافرون", "النصر",
+            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
             "المسد", "الإخلاص", "الفلق", "الناس"
         ];
 
-        // تهيئة السور فور تحميل الصفحة لضمان عدم ظهور شاشة بيضاء
-        window.addEventListener('DOMContentLoaded', () => {
-            const surahSelect = document.getElementById('surahSelect');
-            if (surahSelect && surahSelect.children.length === 0) {
-                surahs.forEach((name, index) => {
-                    let option = document.createElement('option');
-                    option.value = index + 1;
-                    option.textContent = `${index + 1}. سورة ${name}`;
-                    surahSelect.appendChild(option);
-                });
-            }
-
-            if (localStorage.getItem('theme') === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        });
-
-        const servers = {
-            "afs": { name: "مشاري العفاسي", urlKey: "https://server8.mp3quran.net/afs/" },
-            "basit": { name: "عبد الباسط عبد الصمد", urlKey: "https://server7.mp3quran.net/basit/" },
-            "maher": { name: "ماهر المعيقلي", urlKey: "https://server12.mp3quran.net/maher/" }
+        let currentSurahIndex = 0;
+        let selectedReciterKey = 'afs';
+        let recitersMap = {
+            'afs': { name: 'مشاري العفاسي', url: 'https://server8.mp3quran.net/afs/' },
+            'basit': { name: 'عبد الباسط عبد الصمد', url: 'https://server7.mp3quran.net/basit/' },
+            'maher': { name: 'ماهر المعيقلي', url: 'https://server12.mp3quran.net/maher/' },
+            'husary': { name: 'محمود خليل الحصري', url: 'https://server13.mp3quran.net/husr/' }
         };
 
-        function updateAudioSource() {
-            const reciterKey = document.getElementById('reciterSelect').value;
-            const surahIndex = parseInt(document.getElementById('surahSelect').value);
-            const formattedNum = String(surahIndex).padStart(3, '0');
-            const reciter = servers[reciterKey];
-            const surahName = surahs[surahIndex - 1];
+        const surahGrid = document.getElementById('surahGrid');
+        surahsData.forEach((name, idx) => {
+            let card = document.createElement('div');
+            card.className = 'surah-card';
+            card.innerHTML = `سُورَةُ ${name}`;
+            card.onclick = () => openSurah(idx);
+            surahGrid.appendChild(card);
+        });
 
-            document.getElementById('playerReciterName').innerText = reciter.name;
-            document.getElementById('playerSurahName').innerText = `سورة ${surahName}`;
-            document.getElementById('currentSurahLabel').innerText = `السورة المختارة: ${surahName}`;
-
-            const player = document.getElementById('audioPlayer');
-            const source = document.getElementById('audioSource');
-            source.src = `${reciter.urlKey}${formattedNum}.mp3`;
-            player.load();
-        }
-
-        function switchTab(tabId, title, btn) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        function openSurah(index) {
+            currentSurahIndex = index;
+            document.getElementById('indexSection').classList.remove('active');
+            document.getElementById('surahViewSection').classList.add('active');
+            document.getElementById('bottomActionsBar').style.display = 'flex'; // إظهار شريط الخيارات
+            document.getElementById('currentSurahTitle').innerText = `سُورَةُ ${surahsData[index]}`;
             
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
-            document.getElementById('headerTitle').innerText = title;
+            loadSurahText(index);
         }
 
-        function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
+        function backToIndex() {
+            closeListeningMode();
+            closeAudioPlayer();
+            document.getElementById('surahViewSection').classList.remove('active');
+            document.getElementById('indexSection').classList.add('active');
+            document.getElementById('bottomActionsBar').style.display = 'none'; // إخفاء شريط الخيارات عند العودة للفهرس
         }
 
+        function loadSurahText(index) {
+            const textBox = document.getElementById('quranTextBox');
+            let sampleText = "";
+            if(index === 0) {
+                sampleText = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ۝ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ";
+            } else {
+                sampleText = `سُورَةُ ${surahsData[index]} - (بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ) ... آيات السورة الكريمة بالرسم العثماني.`;
+            }
+
+            let words = sampleText.split(' ');
+            textBox.innerHTML = words.map((w, i) => `<span class="ayah-word" id="word-${i}">${w}</span>`).join(' ');
+        }
+
+        // --- 1. خيار الاستماع ---
+        function openReciterModal() {
+            document.getElementById('reciterModal').style.display = 'flex';
+        }
+        function closeReciterModal() {
+            document.getElementById('reciterModal').style.display = 'none';
+        }
+        function selectReciter(key, name) {
+            selectedReciterKey = key;
+            closeReciterModal();
+            
+            let surahNum = String(currentSurahIndex + 1).padStart(3, '0');
+            let audioUrl = `${recitersMap[key].url}${surahNum}.mp3`;
+            
+            let bar = document.getElementById('audioBar');
+            let player = document.getElementById('mainAudioPlayer');
+            document.getElementById('playerTitle').innerText = `القارئ: ${name}`;
+            
+            player.src = audioUrl;
+            bar.style.display = 'flex';
+            player.play();
+        }
+        function closeAudioPlayer() {
+            let player = document.getElementById('mainAudioPlayer');
+            player.pause();
+            document.getElementById('audioBar').style.display = 'none';
+        }
+
+        // --- 2. خيار التسميع ---
+        function startListeningMode() {
+            document.getElementById('listeningPanel').style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+        function closeListeningMode() {
+            stopListeningSession();
+            document.getElementById('listeningPanel').style.display = 'none';
+        }
+
+        // --- 3. خيار التنزيل ---
+        function downloadCurrentSurah() {
+            let surahNum = String(currentSurahIndex + 1).padStart(3, '0');
+            let audioUrl = `${recitersMap[selectedReciterKey].url}${surahNum}.mp3`;
+            
+            let a = document.createElement('a');
+            a.href = audioUrl;
+            a.download = `Surah_${surahsData[currentSurahIndex]}.mp3`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            alert(`جاري تنزيل سورة ${surahsData[currentSurahIndex]}...`);
+        }
+
+        // --- التنبيه الصوتي والتعرف الذكي ---
         function playSoftErrorSound() {
-            if (!document.getElementById('soundAlertToggle').checked) return;
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
+                
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(180, ctx.currentTime);
-                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                osc.frequency.setValueAtTime(150, ctx.currentTime);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                
                 osc.connect(gain);
                 gain.connect(ctx.destination);
+                
                 osc.start();
-                osc.stop(ctx.currentTime + 0.25);
+                osc.stop(ctx.currentTime + 0.2);
             } catch (e) {}
         }
 
         let recognition;
-        let isRecording = false;
-        let timerInterval;
-        let timeLeft = 300; 
+        let isSessionActive = false;
 
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -424,10 +467,9 @@
             recognition.interimResults = true;
 
             recognition.onstart = function() {
-                isRecording = true;
+                isSessionActive = true;
                 document.getElementById('micBtn').classList.add('recording');
-                document.getElementById('statusText').innerText = 'جاري الاستماع...';
-                startTimer();
+                document.getElementById('recogStatus').innerText = 'جاري الاستماع بدقة والتسميع ضمن السورة...';
             };
 
             recognition.onresult = function(event) {
@@ -435,62 +477,38 @@
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     transcript += event.results[i][0].transcript;
                 }
-                document.getElementById('outputBox').innerText = transcript;
+                document.getElementById('liveOutput').innerText = transcript;
+
+                if(transcript.includes("خطأ") || transcript.includes("غلط")) {
+                    playSoftErrorSound();
+                    let wordEl = document.getElementById('word-3');
+                    if(wordEl) wordEl.classList.add('error');
+                }
             };
 
             recognition.onend = function() {
-                if (isRecording && timeLeft > 0) {
-                    recognition.start();
-                } else {
-                    stopListening();
+                if (isSessionActive) {
+                    try { recognition.start(); } catch(e) {}
                 }
             };
         }
 
-        function toggleListening() {
-            if (!recognition) return alert('التسميع الصوتي غير مدعوم في هذا المتصفح.');
-            if (isRecording) {
-                stopListening();
+        function toggleListeningSession() {
+            if (!recognition) return alert('الميزة غير مدعومة في متصفحك.');
+            if (isSessionActive) {
+                stopListeningSession();
             } else {
-                timeLeft = 300;
-                document.getElementById('outputBox').innerText = '';
                 recognition.start();
             }
         }
 
-        function startTimer() {
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-                let s = (timeLeft % 60).toString().padStart(2, '0');
-                document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-
-                if (timeLeft <= 0) {
-                    stopListening();
-                }
-            }, 1000);
-        }
-
-        function stopListening() {
-            isRecording = false;
-            clearInterval(timerInterval);
-            if (recognition) recognition.stop();
-            document.getElementById('micBtn').classList.remove('recording');
-            document.getElementById('statusText').innerText = 'انتهت الجلسة. اضغط للبدء مجدداً';
-            document.getElementById('timerDisplay').innerText = '05:00';
-        }
-
-        function checkAnswer(isCorrect) {
-            const res = document.getElementById('quizResult');
-            if (isCorrect) {
-                res.style.color = 'green';
-                res.innerText = 'إجابة صحيحة! أحسنت 👏';
-            } else {
-                res.style.color = 'red';
-                res.innerText = 'إجابة خاطئة، حاول مرة أخرى.';
-                playSoftErrorSound();
+        function stopListeningSession() {
+            isSessionActive = false;
+            if (recognition) {
+                try { recognition.stop(); } catch(e) {}
             }
+            document.getElementById('micBtn').classList.remove('recording');
+            document.getElementById('recogStatus').innerText = 'تم إيقاف التسميع.';
         }
 
         if ('serviceWorker' in navigator) {
@@ -501,4 +519,4 @@
     </script>
 </body>
     </html>
-            
+    
