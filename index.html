@@ -38,7 +38,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            padding-bottom: 140px; /* مساحة للشريط السفلي ومشغل الصوت */
+            padding-bottom: 140px;
             transition: background 0.3s, color 0.3s;
         }
 
@@ -54,5 +54,451 @@
 
         header h1 {
             margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
 
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .select-box {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .mic-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px auto;
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        }
+
+        .mic-btn.recording {
+            background-color: var(--error-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        .timer-display {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .output-box {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 80px;
+            max-height: 150px;
+            overflow-y: auto;
+            text-align: right;
+            font-size: 1.1rem;
+            margin-top: 15px;
+        }
+
+        .audio-player-bar {
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 99;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .audio-controls audio {
+            height: 35px;
+            max-width: 200px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .nav-item span {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            text-align: right;
+        }
+
+        .option-btn:hover {
+            background: var(--bg-color);
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 id="headerTitle">وِرْد - القراءة والتسميع</h1>
+    </header>
+
+    <div class="container">
         
+        <!-- قسم القراءة والتسميع -->
+        <section id="readTab" class="tab-content active">
+            <div class="card">
+                <h3>اختر القارئ</h3>
+                <select id="reciterSelect" class="select-box" onchange="updateAudioSource()">
+                    <option value="afs">الشيخ مشاري العفاسي</option>
+                    <option value="basit">الشيخ عبد الباسط عبد الصمد</option>
+                    <option value="maher">الشيخ ماهر المعيقلي</option>
+                </select>
+
+                <h3>اختر السورة</h3>
+                <select id="surahSelect" class="select-box" onchange="updateAudioSource()">
+                    <!-- يتم تعبئة السور تلقائياً -->
+                </select>
+            </div>
+
+            <div class="card" style="text-align: center;">
+                <h3>التسميع الذكي (5 دقائق)</h3>
+                <p style="font-size: 0.9rem; color: #666;" id="currentSurahLabel">السورة المختارة: الفاتحة</p>
+                
+                <button id="micBtn" class="mic-btn" onclick="toggleListening()">🎤</button>
+                <div id="timerDisplay" class="timer-display">05:00</div>
+                <div id="statusText" style="font-size:0.85rem; color:#888; margin-top:5px;">اضغط لبدء الجلسة</div>
+                
+                <div id="outputBox" class="output-box">النص المسموع سيظهر هنا...</div>
+            </div>
+        </section>
+
+        <!-- قسم الألعاب الدينية -->
+        <section id="gamesTab" class="tab-content">
+            <div class="card">
+                <h3>مسابقة المعلومات القرآنية</h3>
+                <p id="quizQuestion">ما هي السورة التي تسمى بعروس القرآن؟</p>
+                <button class="option-btn" onclick="checkAnswer(false)">سورة يس</button>
+                <button class="option-btn" onclick="checkAnswer(true)">سورة الرحمن</button>
+                <button class="option-btn" onclick="checkAnswer(false)">سورة الواقعة</button>
+                <div id="quizResult" style="margin-top: 10px; font-weight: bold;"></div>
+            </div>
+        </section>
+
+        <!-- قسم الإعدادات -->
+        <section id="settingsTab" class="tab-content">
+            <div class="card">
+                <h3>الإعدادات العامة</h3>
+                <div class="setting-row">
+                    <span>الوضع الداكن (Dark Mode)</span>
+                    <button onclick="toggleTheme()" style="padding: 5px 10px;">تبديل</button>
+                </div>
+                <div class="setting-row">
+                    <span>تنبيهات الخطأ الصوتية</span>
+                    <input type="checkbox" id="soundAlertToggle" checked>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- مشغل الصوت أسفل الشاشة -->
+    <div class="audio-player-bar">
+        <div class="player-info">
+            <div style="font-size: 1.5rem;">🎧</div>
+            <div>
+                <div id="playerReciterName" style="font-weight: bold; font-size:0.9rem;">مشاري العفاسي</div>
+                <div id="playerSurahName" style="font-size:0.75rem; color:#777;">الفاتحة</div>
+            </div>
+        </div>
+        <div class="audio-controls">
+            <audio id="audioPlayer" controls>
+                <source id="audioSource" src="https://server8.mp3quran.net/afs/001.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('readTab', 'وِرْد - القراءة والتسميع', this)">
+            <span>📖</span>
+            القراءة والتسميع
+        </button>
+        <button class="nav-item" onclick="switchTab('gamesTab', 'الألعاب الدينية', this)">
+            <span>🎮</span>
+            الألعاب الدينية
+        </button>
+        <button class="nav-item" onclick="switchTab('settingsTab', 'الإعدادات', this)">
+            <span>⚙️</span>
+            الإعدادات
+        </button>
+    </nav>
+
+    <script>
+        const surahs = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
+            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
+            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "المعون", "الماعون", "الكافرون", "النصر",
+            "المسد", "الإخلاص", "الفلق", "الناس"
+        ];
+
+        // تهيئة السور فور تحميل الصفحة لضمان عدم ظهور شاشة بيضاء
+        window.addEventListener('DOMContentLoaded', () => {
+            const surahSelect = document.getElementById('surahSelect');
+            if (surahSelect && surahSelect.children.length === 0) {
+                surahs.forEach((name, index) => {
+                    let option = document.createElement('option');
+                    option.value = index + 1;
+                    option.textContent = `${index + 1}. سورة ${name}`;
+                    surahSelect.appendChild(option);
+                });
+            }
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        });
+
+        const servers = {
+            "afs": { name: "مشاري العفاسي", urlKey: "https://server8.mp3quran.net/afs/" },
+            "basit": { name: "عبد الباسط عبد الصمد", urlKey: "https://server7.mp3quran.net/basit/" },
+            "maher": { name: "ماهر المعيقلي", urlKey: "https://server12.mp3quran.net/maher/" }
+        };
+
+        function updateAudioSource() {
+            const reciterKey = document.getElementById('reciterSelect').value;
+            const surahIndex = parseInt(document.getElementById('surahSelect').value);
+            const formattedNum = String(surahIndex).padStart(3, '0');
+            const reciter = servers[reciterKey];
+            const surahName = surahs[surahIndex - 1];
+
+            document.getElementById('playerReciterName').innerText = reciter.name;
+            document.getElementById('playerSurahName').innerText = `سورة ${surahName}`;
+            document.getElementById('currentSurahLabel').innerText = `السورة المختارة: ${surahName}`;
+
+            const player = document.getElementById('audioPlayer');
+            const source = document.getElementById('audioSource');
+            source.src = `${reciter.urlKey}${formattedNum}.mp3`;
+            player.load();
+        }
+
+        function switchTab(tabId, title, btn) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            document.getElementById('headerTitle').innerText = title;
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+
+        function playSoftErrorSound() {
+            if (!document.getElementById('soundAlertToggle').checked) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(180, ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.25);
+            } catch (e) {}
+        }
+
+        let recognition;
+        let isRecording = false;
+        let timerInterval;
+        let timeLeft = 300; 
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'ar-SA';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = function() {
+                isRecording = true;
+                document.getElementById('micBtn').classList.add('recording');
+                document.getElementById('statusText').innerText = 'جاري الاستماع...';
+                startTimer();
+            };
+
+            recognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    transcript += event.results[i][0].transcript;
+                }
+                document.getElementById('outputBox').innerText = transcript;
+            };
+
+            recognition.onend = function() {
+                if (isRecording && timeLeft > 0) {
+                    recognition.start();
+                } else {
+                    stopListening();
+                }
+            };
+        }
+
+        function toggleListening() {
+            if (!recognition) return alert('التسميع الصوتي غير مدعوم في هذا المتصفح.');
+            if (isRecording) {
+                stopListening();
+            } else {
+                timeLeft = 300;
+                document.getElementById('outputBox').innerText = '';
+                recognition.start();
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                let s = (timeLeft % 60).toString().padStart(2, '0');
+                document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+
+                if (timeLeft <= 0) {
+                    stopListening();
+                }
+            }, 1000);
+        }
+
+        function stopListening() {
+            isRecording = false;
+            clearInterval(timerInterval);
+            if (recognition) recognition.stop();
+            document.getElementById('micBtn').classList.remove('recording');
+            document.getElementById('statusText').innerText = 'انتهت الجلسة. اضغط للبدء مجدداً';
+            document.getElementById('timerDisplay').innerText = '05:00';
+        }
+
+        function checkAnswer(isCorrect) {
+            const res = document.getElementById('quizResult');
+            if (isCorrect) {
+                res.style.color = 'green';
+                res.innerText = 'إجابة صحيحة! أحسنت 👏';
+            } else {
+                res.style.color = 'red';
+                res.innerText = 'إجابة خاطئة، حاول مرة أخرى.';
+                playSoftErrorSound();
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
+</body>
+    </html>
+            
