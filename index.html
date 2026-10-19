@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق وِرْد - المصحف الشريف والتسميع الذكي</title>
 
-    <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#004d40">
 
@@ -44,7 +43,7 @@
         }
 
         header {
-            background-color: #004d40;
+            background-color: var(--primary);
             color: white;
             padding: 15px;
             text-align: center;
@@ -60,15 +59,15 @@
             padding: 15px;
         }
 
-        /* التحكم بالأقسام الصفحات */
-        .tab-page {
+        /* نظام الصفحات الرئيسية */
+        .page-section {
             display: none;
         }
-        .tab-page.active {
+        .page-section.active {
             display: block;
         }
 
-        /* شبكة التصنيفات */
+        /* شبكة الأجزاء */
         .category-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -85,6 +84,11 @@
             cursor: pointer;
             font-size: 1.2rem;
             color: var(--text);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .category-card:hover {
+            background: #e0f2f1;
         }
 
         .surah-grid {
@@ -165,7 +169,7 @@
         }
 
         .ayah-block.revealed-correct {
-            color: #004d40;
+            color: var(--primary);
         }
 
         .ayah-block.revealed-error {
@@ -184,7 +188,7 @@
         }
 
         .mic-btn-large {
-            background-color: #00796b;
+            background-color: var(--secondary);
             color: white;
             border: none;
             width: 70px;
@@ -202,6 +206,7 @@
             background-color: var(--accent);
         }
 
+        /* شريط التنقل السفلي الرئيسي */
         .main-bottom-nav {
             position: fixed;
             bottom: 0;
@@ -228,8 +233,13 @@
             cursor: pointer;
         }
 
+        .nav-item span {
+            font-size: 1.3rem;
+            margin-bottom: 2px;
+        }
+
         .nav-item.active {
-            color: #00796b;
+            color: var(--secondary);
             font-weight: bold;
         }
 
@@ -250,7 +260,7 @@
         .action-btn {
             background: none;
             border: none;
-            color: #004d40;
+            color: var(--primary);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -263,7 +273,7 @@
             position: fixed;
             bottom: 115px;
             left: 0; right: 0;
-            background: #004d40; color: white;
+            background: var(--primary); color: white;
             padding: 10px 20px;
             display: flex; align-items: center; justify-content: space-between;
             z-index: 98;
@@ -294,7 +304,7 @@
             background: white; padding: 20px; border-radius: 10px; width: 300px; text-align: center;
         }
         .modal-content button {
-            width: 100%; padding: 10px; margin: 5px 0; background: #00796b; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: 'UthmanicHafs';
+            width: 100%; padding: 10px; margin: 5px 0; background: var(--secondary); color: white; border: none; border-radius: 5px; cursor: pointer; font-family: 'UthmanicHafs';
         }
     </style>
 </head>
@@ -305,7 +315,7 @@
     <div class="container">
         
         <!-- صفحة القرآن الرئيسية -->
-        <section id="quranPage" class="tab-page active">
+        <section id="quranPage" class="page-section active">
             <!-- الفهرس والأجزاء -->
             <div id="categoryView">
                 <h2 style="text-align: center; font-family: 'UthmanicHafs';">الأقسام والفهارس</h2>
@@ -332,7 +342,7 @@
             <!-- قائمة السور بالجزء -->
             <div id="surahListView" style="display: none;">
                 <div class="surah-header">
-                    <button onclick="backToCategories()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; font-family:'UthmanicHafs'; color:#004d40;">⬅ عودة للأقسام</button>
+                    <button onclick="backToCategories()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; font-family:'UthmanicHafs'; color:var(--primary);">⬅ عودة للأقسام</button>
                     <h3 id="categoryTitle" style="margin:0; font-family:'UthmanicHafs';">السور</h3>
                 </div>
                 <div id="surahGrid" class="surah-grid"></div>
@@ -341,7 +351,7 @@
             <!-- عرض السورة والتسميع -->
             <div id="surahViewSection" style="display: none;">
                 <div class="surah-header">
-                    <button onclick="backToSurahList()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; font-family:'UthmanicHafs'; color:#004d40;">⬅ عودة لقائمة السور</button>
+                    <button onclick="backToSurahList()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; font-family:'UthmanicHafs'; color:var(--primary);">⬅ عودة لقائمة السور</button>
                     <h3 id="currentSurahTitle" style="margin:0; font-family:'UthmanicHafs';">سورة الفاتحة</h3>
                 </div>
 
@@ -356,17 +366,17 @@
                 <div id="quranTextBox" class="quran-text-box"></div>
 
                 <div id="listeningPanel" class="listening-panel" style="display: none;">
-                    <h4 style="margin:0; color:#00796b;">جلسة التسميع بالذكاء الاصطناعي (وقت لامتناهي)</h4>
+                    <h4 style="margin:0; color:var(--secondary);">جلسة التسميع بالذكاء الاصطناعي (وقت لامتناهي)</h4>
                     <p id="recogStatus" style="font-size: 0.9rem; color: #555;">اضغط على الميكروفون وابدأ القراءة...</p>
                     <button id="micBtn" class="mic-btn-large" onclick="toggleListeningSession()">🎙️</button>
-                    <div id="liveOutput" style="font-size: 1.1rem; color: #004d40; margin-top:10px; min-height: 40px; font-weight: bold;"></div>
+                    <div id="liveOutput" style="font-size: 1.1rem; color: var(--primary); margin-top:10px; min-height: 40px; font-weight: bold;"></div>
                     <button onclick="closeListeningMode()" style="background:#d32f2f; color:white; border:none; padding:8px 18px; border-radius:5px; cursor:pointer; margin-top:10px; font-family:'UthmanicHafs';">إنهاء الجلسة وإعادة إظهار الآيات</button>
                 </div>
             </div>
         </section>
 
         <!-- صفحة المسابقة -->
-        <section id="quizPage" class="tab-page">
+        <section id="quizPage" class="page-section">
             <div class="card">
                 <h3 style="font-family:'UthmanicHafs';">مسابقة المعلومات القرآنية</h3>
                 <p id="quizQuestion">ما هي السورة التي تسمى بعروس القرآن؟</p>
@@ -378,10 +388,136 @@
         </section>
 
         <!-- صفحة الإعدادات -->
-        <section id="settingsPage" class="tab-page">
+        <section id="settingsPage" class="page-section">
             <div class="card">
                 <h3 style="font-family:'UthmanicHafs';">الإعدادات العامة</h3>
-                <div style="display:flex; justify-style:space-between; align-items:center; padding:10px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
                     <span>الوضع الداكن (Dark Mode)</span>
-                    <button onclick
-    
+                    <button onclick="toggleTheme()" style="padding: 5px 10px; font-family:'UthmanicHafs';">تبديل</button>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
+                    <span>تنبيهات الخطأ الصوتية</span>
+                    <input type="checkbox" id="soundAlertToggle" checked>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- مشغل الصوت -->
+    <div class="audio-player-bar" id="audioBar" style="display:none;">
+        <div>
+            <span id="playerTitle" style="font-size: 0.85rem; font-weight:bold;">الشيخ: العفاسي</span>
+        </div>
+        <audio id="mainAudioPlayer" controls></audio>
+        <button onclick="closeAudioPlayer()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem;">✖</button>
+    </div>
+
+    <!-- شريط خيارات السورة -->
+    <div id="surahActionsBar" class="surah-actions-bar" style="display: none;">
+        <button class="action-btn" onclick="openReciterModal()">
+            <span>🎧</span> استماع
+        </button>
+        <button class="action-btn" onclick="startListeningMode()">
+            <span>🎙️</span> تسميع
+        </button>
+        <button class="action-btn" onclick="downloadCurrentSurah()">
+            <span>📥</span> تنزيل
+        </button>
+    </div>
+
+    <!-- شريط التنقل السفلي الرئيسي -->
+    <nav class="main-bottom-nav">
+        <button class="nav-item active" onclick="switchMainTab('quranPage', 'وِرْد - المصحف الشريف', this)">
+            <span>📖</span> القرآن الكريم
+        </button>
+        <button class="nav-item" onclick="switchMainTab('quizPage', 'المسابقة الدينية', this)">
+            <span>🎮</span> المسابقة
+        </button>
+        <button class="nav-item" onclick="switchMainTab('settingsPage', 'الإعدادات', this)">
+            <span>⚙️</span> الإعدادات
+        </button>
+    </nav>
+
+    <!-- نافذة اختيار القارئ -->
+    <div id="reciterModal" class="modal">
+        <div class="modal-content">
+            <h3>اختر القارئ الكريم</h3>
+            <button onclick="selectReciter('afs', 'مشاري العفاسي')">مشاري العفاسي</button>
+            <button onclick="selectReciter('basit', 'عبد الباسط عبد الصمد')">عبد الباسط عبد الصمد</button>
+            <button onclick="selectReciter('maher', 'ماهر المعيقلي')">ماهر المعيقلي</button>
+            <button onclick="selectReciter('husary', 'محمود خليل الحصري')">محمود خليل الحصري</button>
+            <br>
+            <button onclick="closeReciterModal()" style="background:#757575;">إلغاء</button>
+        </div>
+    </div>
+
+    <script>
+        const categoriesData = {
+            "amm": { title: "جزء عم (الجزء ٣٠)", start: 78, end: 114 },
+            "tabarak": { title: "جزء تبارك (الجزء ٢٩)", start: 67, end: 77 },
+            "mujādila": { title: "جزء المجادلة (الجزء ٢٨)", start: 58, end: 66 },
+            "towal": { title: "السور الطوال وجميع السور", start: 1, end: 57 }
+        };
+
+        const surahsData = [
+            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
+            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
+            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
+            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
+            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
+            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
+            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
+            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
+            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
+            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
+            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
+            "المسد", "الإخلاص", "الفلق", "الناس"
+        ];
+
+        let currentSurahIndex = 0;
+        let isBookClosed = false;
+        let selectedReciterKey = 'afs';
+        let recitersMap = {
+            'afs': { name: 'مشاري العفاسي', url: 'https://server8.mp3quran.net/afs/' },
+            'basit': { name: 'عبد الباسط عبد الصمد', url: 'https://server7.mp3quran.net/basit/' },
+            'maher': { name: 'ماهر المعيقلي', url: 'https://server12.mp3quran.net/maher/' },
+            'husary': { name: 'محمود خليل الحصري', url: 'https://server13.mp3quran.net/husr/' }
+        };
+
+        // دالة التنقل بين الصفحات الرئيسية (القرآن، المسابقة، الإعدادات)
+        function switchMainTab(pageId, title, btn) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            btn.classList.add('active');
+            document.getElementById('mainHeader').innerText = title;
+
+            // التحكم في ظهور شريط خيارات السورة الفرعي
+            if (pageId !== 'quranPage') {
+                document.getElementById('surahActionsBar').style.display = 'none';
+            } else if (document.getElementById('surahViewSection').style.display === 'block') {
+                document.getElementById('surahActionsBar').style.display = 'flex';
+            }
+        }
+
+        function openCategory(key) {
+            const cat = categoriesData[key];
+            document.getElementById('categoryView').style.display = 'none';
+            document.getElementById('surahListView').style.display = 'block';
+            document.getElementById('categoryTitle').innerText = cat.title;
+
+            const grid = document.getElementById('surahGrid');
+            grid.innerHTML = '';
+            for (let i = cat.start; i <= cat.end; i++) {
+                let card = document.createElement('div');
+                card.className = 'surah-card';
+                card.innerHTML = `${i}. سُورَةُ ${surahsData[i - 1]}`;
+                card.onclick = function() { openSurah(i - 1); };
+                grid.appendChild(card);
+            }
+        }
+
+        function backToCategories() {
+            document.getEle
