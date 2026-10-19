@@ -147,7 +147,7 @@
             color: var(--text-muted);
         }
 
-        /* Reading View */
+        /* Reader View */
         .reader-view {
             display: none;
             background: var(--card-bg);
@@ -180,33 +180,54 @@
             gap: 0.5rem;
         }
 
-        /* Audio Bar Styles */
+        /* Custom Audio Player */
         .audio-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            background: #f0fdf4;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid #bbf7d0;
+            margin-bottom: 1.5rem;
+        }
+
+        .audio-controls-row {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            background: var(--bg);
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            border: 1px solid #e0e0e0;
-            width: 100%;
-            margin-bottom: 1rem;
         }
 
         .audio-bar select {
-            padding: 0.4rem;
+            padding: 0.6rem;
             border-radius: 8px;
-            border: 1px solid #ccc;
+            border: 1px solid #a7f3d0;
             font-family: 'Tajawal', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             outline: none;
             background: #fff;
             flex: 1;
+            color: var(--primary);
+            font-weight: bold;
         }
 
-        .audio-bar audio {
-            height: 35px;
-            flex: 2;
+        .play-btn {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+
+        .play-btn:hover {
+            background: #c29d2b;
         }
 
         .bismillah {
@@ -268,20 +289,27 @@
         <!-- Reader View -->
         <div id="readerView" class="reader-view">
             <div class="reader-header">
-                <button class="back-btn" onclick="showList()"><i class="fa-solid fa-arrow-right"></i> العودة للقائمة</button>
+                <button class="back-btn" onclick="showList()"><i class="fa-solid fa-arrow-right"></i> العودة لقائمة السور</button>
                 <h2 id="currentSurahName" class="surah-title"></h2>
             </div>
 
-            <!-- Audio Player Controls -->
+            <!-- Custom Audio Bar -->
             <div class="audio-bar">
-                <select id="reciterSelect" onchange="changeReciter()">
-                    <option value="ar.abdulrahmanassudais">الشيخ عبد الرحمن السديس</option>
-                    <option value="ar.misharyrashidalafasy">الشيخ مشاري العفاسي</option>
-                    <option value="ar.abdulbasit">الشيخ عبد الباسط عبد الصمد</option>
-                    <option value="ar.saudalsuraim">الشيخ سعود الشريم</option>
-                    <option value="ar.hudhaify">الشيخ علي الحذيفي</option>
-                </select>
-                <audio id="audioPlayer" controls></audio>
+                <div class="audio-controls-row">
+                    <select id="reciterSelect" onchange="changeReciter()">
+                        <option value="ar.abdulrahmanassudais">الشيخ عبد الرحمن السديس</option>
+                        <option value="ar.misharyrashidalafasy">الشيخ مشاري العفاسي</option>
+                        <option value="ar.abdulbasit">الشيخ عبد الباسط عبد الصمد</option>
+                        <option value="ar.saudalsuraim">الشيخ سعود الشريم</option>
+                        <option value="ar.hudhaify">الشيخ علي الحذيفي</option>
+                    </select>
+
+                    <button id="playAudioBtn" class="play-btn" onclick="togglePlay()">
+                        <i id="playIcon" class="fa-solid fa-play"></i>
+                        <span id="playText">تشغيل التلاوة</span>
+                    </button>
+                </div>
+                <audio id="audioPlayer" style="display:none;"></audio>
             </div>
 
             <div class="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
@@ -297,6 +325,7 @@
         const API_URL = "https://api.alquran.cloud/v1";
         let surahsData = [];
         let currentSurahNumber = 1;
+        const audioPlayer = document.getElementById('audioPlayer');
 
         // Fetch Surah List
         async function fetchSurahs() {
@@ -350,13 +379,13 @@
             document.getElementById('readerView').style.display = 'block';
             document.getElementById('currentSurahName').textContent = name;
             
-            const contentDiv = document.getElementById('quranContent');
-            contentDiv.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل الآيات والتلاوة...</div>';
+            resetAudioState();
             
-            // Hide Bismillah for Surah At-Tawbah (9)
+            const contentDiv = document.getElementById('quranContent');
+            contentDiv.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> جاري تحميل الآيات...</div>';
+            
             document.querySelector('.bismillah').style.display = (number === 9) ? 'none' : 'block';
 
-            // Setup Audio Source
             updateAudioSource();
 
             try {
@@ -379,30 +408,46 @@
             }
         }
 
-        // Update Audio Source based on selected reciter and current surah
+        // Audio Controls
         function updateAudioSource() {
             const reciter = document.getElementById('reciterSelect').value;
-            const audioPlayer = document.getElementById('audioPlayer');
-            // AlQuran Cloud audio endpoint format
-            const formattedSurah = String(currentSurahNumber).padStart(3, '0');
             audioPlayer.src = `https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${currentSurahNumber}.mp3`;
         }
 
-        // Change Reciter event
+        function togglePlay() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                document.getElementById('playIcon').className = 'fa-solid fa-pause';
+                document.getElementById('playText').textContent = 'إيقاف مؤقت';
+            } else {
+                audioPlayer.pause();
+                resetAudioState();
+            }
+        }
+
         function changeReciter() {
             updateAudioSource();
-            document.getElementById('audioPlayer').play();
+            audioPlayer.play();
+            document.getElementById('playIcon').className = 'fa-solid fa-pause';
+            document.getElementById('playText').textContent = 'إيقاف مؤقت';
         }
+
+        function resetAudioState() {
+            document.getElementById('playIcon').className = 'fa-solid fa-play';
+            document.getElementById('playText').textContent = 'تشغيل التلاوة';
+        }
+
+        audioPlayer.onended = () => resetAudioState();
 
         // Return to List View
         function showList() {
             document.getElementById('readerView').style.display = 'none';
             document.getElementById('listView').style.display = 'block';
-            // Stop audio when leaving reader
-            document.getElementById('audioPlayer').pause();
+            audioPlayer.pause();
+            resetAudioState();
         }
 
-        // Register Service Worker for PWA
+        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 const swCode = `
@@ -414,9 +459,8 @@
             });
         }
 
-        // Initial Load
         fetchSurahs();
     </script>
 </body>
-                </html>
-    
+    </html>
+                            
