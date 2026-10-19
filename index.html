@@ -180,7 +180,7 @@
             gap: 0.5rem;
         }
 
-        /* Audio Player Container */
+        /* Audio Box */
         .audio-box {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -291,17 +291,17 @@
             <!-- Audio Player Section -->
             <div class="audio-box">
                 <div class="audio-row">
-                    <select id="reciterSelect" onchange="loadAudioViaAPI()">
-                        <option value="ar.alafasy">الشيخ مشاري العفاسي</option>
-                        <option value="ar.abdulbasatmurattal">الشيخ عبد الباسط عبد الصمد</option>
-                        <option value="ar.abdurrahmaanasSudais">الشيخ عبد الرحمن السديس</option>
-                        <option value="ar.shaatree">الشيخ أبوبكر الشاطري</option>
-                        <option value="ar.hudhaify">الشيخ علي الحذيفي</option>
+                    <select id="reciterSelect" onchange="updateAudioSource()">
+                        <option value="Alafasy_128kbps">الشيخ مشاري العفاسي</option>
+                        <option value="Abdurrahmaan_As-Sudais_192kbps">الشيخ عبد الرحمن السديس</option>
+                        <option value="Abdul_Basit_Murattal_192kbps">الشيخ عبد الباسط عبد الصمد</option>
+                        <option value="Saood_ash-Shuraym_128kbps">الشيخ سعود الشريم</option>
+                        <option value="Hudhaify_128kbps">الشيخ علي الحذيفي</option>
                     </select>
                 </div>
                 <!-- Native Audio Controls -->
-                <audio id="audioPlayer" controls></audio>
-                <div id="audioStatus" class="audio-status">جاري تجهيز رابط الصوت...</div>
+                <audio id="audioPlayer" controls preload="metadata"></audio>
+                <div id="audioStatus" class="audio-status">جاهز للاستماع</div>
             </div>
 
             <div class="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
@@ -376,8 +376,8 @@
             
             document.querySelector('.bismillah').style.display = (number === 9) ? 'none' : 'block';
 
-            // Fetch Audio Link Safely
-            loadAudioViaAPI();
+            // Set audio source directly
+            updateAudioSource();
 
             try {
                 const res = await fetch(`${API_URL}/surah/${number}`);
@@ -399,31 +399,17 @@
             }
         }
 
-        // Fetch Secure Audio Stream directly via API
-        async function loadAudioViaAPI() {
-            const statusDiv = document.getElementById('audioStatus');
-            statusDiv.textContent = "جاري تحميل التلاوة...";
+        // Update Audio Source with exact valid format
+        function updateAudioSource() {
             const reciter = document.getElementById('reciterSelect').value;
-
-            try {
-                const res = await fetch(`${API_URL}/surah/${currentSurahNumber}/${reciter}`);
-                const data = await res.json();
-
-                if (data.data && data.data.ayahs && data.data.ayahs.length > 0) {
-                    // Get first Ayah audio URL which holds valid HTTPS stream URL
-                    const sampleAudio = data.data.ayahs[0].audio;
-                    // Format to full surah audio link directly provided by API
-                    const surahAudioUrl = sampleAudio.substring(0, sampleAudio.lastIndexOf('/')) + '.mp3';
-                    
-                    audioPlayer.src = surahAudioUrl;
-                    audioPlayer.load();
-                    statusDiv.textContent = "جاهز للاستماع. اضغط على زر التشغيل (▶) أعلاه.";
-                } else {
-                    statusDiv.textContent = "عذراً، الصوت غير متوفر لهذا القارئ حالياً.";
-                }
-            } catch (e) {
-                statusDiv.textContent = "حدث خطأ في جلب الصوت، جرب اختيار قارئ آخر.";
-            }
+            const formattedSurah = String(currentSurahNumber).padStart(3, '0');
+            
+            // Direct robust audio URL format
+            const audioUrl = `https://www.everyayah.com/data/${reciter}/${formattedSurah}.mp3`;
+            
+            audioPlayer.src = audioUrl;
+            audioPlayer.load();
+            document.getElementById('audioStatus').textContent = 'جاهز للاستماع. اضغط تشغيل (▶)';
         }
 
         // Return to List View
