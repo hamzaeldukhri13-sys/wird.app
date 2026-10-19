@@ -292,16 +292,16 @@
             <div class="audio-box">
                 <div class="audio-row">
                     <select id="reciterSelect" onchange="updateAudioSource()">
-                        <option value="Alafasy_128kbps">الشيخ مشاري العفاسي</option>
-                        <option value="Abdurrahmaan_As-Sudais_192kbps">الشيخ عبد الرحمن السديس</option>
-                        <option value="Abdul_Basit_Murattal_192kbps">الشيخ عبد الباسط عبد الصمد</option>
-                        <option value="Saood_ash-Shuraym_128kbps">الشيخ سعود الشريم</option>
-                        <option value="Hudhaify_128kbps">الشيخ علي الحذيفي</option>
+                        <option value="https://server11.mp3quran.net/sds/">الشيخ عبد الرحمن السديس</option>
+                        <option value="https://server8.mp3quran.net/afs/">الشيخ مشاري العفاسي</option>
+                        <option value="https://server7.mp3quran.net/basit/">الشيخ عبد الباسط عبد الصمد</option>
+                        <option value="https://server6.mp3quran.net/shuraim/">الشيخ سعود الشريم</option>
+                        <option value="https://server9.mp3quran.net/huthfi/">الشيخ علي الحذيفي</option>
                     </select>
                 </div>
                 <!-- Native Audio Controls -->
                 <audio id="audioPlayer" controls preload="metadata"></audio>
-                <div id="audioStatus" class="audio-status">جاهز للاستماع</div>
+                <div id="audioStatus" class="audio-status">جاهز للاستماع. اضغط تشغيل (▶)</div>
             </div>
 
             <div class="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
@@ -376,7 +376,6 @@
             
             document.querySelector('.bismillah').style.display = (number === 9) ? 'none' : 'block';
 
-            // Set audio source directly
             updateAudioSource();
 
             try {
@@ -399,13 +398,13 @@
             }
         }
 
-        // Update Audio Source with exact valid format
+        // Update Audio Source using secure MP3Quran server format
         function updateAudioSource() {
-            const reciter = document.getElementById('reciterSelect').value;
+            const serverBaseUrl = document.getElementById('reciterSelect').value;
             const formattedSurah = String(currentSurahNumber).padStart(3, '0');
             
-            // Direct robust audio URL format
-            const audioUrl = `https://www.everyayah.com/data/${reciter}/${formattedSurah}.mp3`;
+            // Format: https://serverX.mp3quran.net/reciter/001.mp3
+            const audioUrl = `${serverBaseUrl}${formattedSurah}.mp3`;
             
             audioPlayer.src = audioUrl;
             audioPlayer.load();
@@ -436,4 +435,4 @@
     </script>
 </body>
     </html>
-    
+        
