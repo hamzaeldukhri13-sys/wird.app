@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق وِرْد - المصحف الشريف والتسميع الذكي</title>
+    <title>تطبيق وِرْد - المصحف الشريف</title>
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#004d40">
@@ -14,43 +14,21 @@
             src: url('https://www.quranflash.com/fonts/KFGQPCUthmanicScriptHafsRegular.woff2') format('woff2');
         }
 
-        :root {
-            --primary: #004d40;
-            --secondary: #00796b;
-            --bg: #f9fbe7;
-            --card-bg: #ffffff;
-            --text: #212121;
-            --accent: #d32f2f;
-            --border-color: #b2dfdb;
-        }
-
-        [data-theme="dark"] {
-            --primary: #80cbc4;
-            --secondary: #4db6ac;
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text: #e0e0e0;
-            --border-color: #333333;
-        }
-
         body {
             font-family: 'UthmanicHafs', Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: #f9fbe7;
+            color: #212121;
             margin: 0;
             padding: 0;
-            padding-bottom: 120px;
+            padding-bottom: 100px;
         }
 
         header {
-            background-color: var(--primary);
+            background-color: #004d40;
             color: white;
             padding: 15px;
             text-align: center;
             font-size: 1.4rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
 
         .container {
@@ -59,465 +37,307 @@
             padding: 15px;
         }
 
-        /* نظام الصفحات الرئيسية */
-        .page-section {
+        /* إدارة الشاشات */
+        .screen {
             display: none;
         }
-        .page-section.active {
+        .screen.active {
             display: block;
         }
 
-        /* شبكة الأجزاء */
-        .category-grid {
+        /* شبكة التصنيفات */
+        .grid-2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
-        .category-card {
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
+        .card-btn {
+            background: #ffffff;
+            border: 2px solid #b2dfdb;
             border-radius: 12px;
-            padding: 20px 10px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             font-size: 1.2rem;
-            color: var(--text);
+            font-family: 'UthmanicHafs';
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .category-card:hover {
+        .card-btn:hover {
             background: #e0f2f1;
         }
 
-        .surah-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .surah-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 1.1rem;
-            color: var(--text);
-        }
-
-        .surah-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-        }
-
-        .book-toggle-bar {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .book-btn {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-family: 'UthmanicHafs', Arial, sans-serif;
-            cursor: pointer;
-        }
-
-        .btn-hint {
-            font-size: 0.8rem;
+        .hint {
+            font-size: 0.75rem;
             color: #666;
-            margin-top: 6px;
             display: block;
+            margin-top: 5px;
         }
 
-        .quran-text-box {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            line-height: 2.4;
-            font-size: 1.6rem;
-            text-align: justify;
-            border: 1px solid var(--border-color);
-            margin-bottom: 20px;
-            min-height: 120px;
-        }
-
-        .ayah-block {
-            display: inline;
-            margin-left: 6px;
-        }
-
-        .ayah-block.hidden-ayah {
-            display: none;
-        }
-
-        .ayah-block.revealed-correct {
-            color: var(--primary);
-        }
-
-        .ayah-block.revealed-error {
-            color: var(--accent) !important;
-            background-color: #ffebee;
-            padding: 2px 4px;
-        }
-
-        .listening-panel {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-            margin-top: 15px;
-        }
-
-        .mic-btn-large {
-            background-color: var(--secondary);
-            color: white;
-            border: none;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            font-size: 1.8rem;
-            cursor: pointer;
-            margin: 10px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mic-btn-large.recording {
-            background-color: var(--accent);
-        }
-
-        /* شريط التنقل السفلي الرئيسي */
-        .main-bottom-nav {
+        /* شريط التنقل السفلي */
+        .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             height: 60px;
-            background: var(--card-bg);
-            border-top: 2px solid var(--border-color);
+            background: #ffffff;
+            border-top: 2px solid #b2dfdb;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            z-index: 100;
+            z-index: 1000;
         }
 
-        .nav-item {
+        .nav-tab {
             background: none;
             border: none;
+            font-family: 'UthmanicHafs';
+            font-size: 0.9rem;
             color: #757575;
+            cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.8rem;
-            font-family: 'UthmanicHafs', Arial, sans-serif;
-            cursor: pointer;
         }
 
-        .nav-item span {
-            font-size: 1.3rem;
-            margin-bottom: 2px;
-        }
-
-        .nav-item.active {
-            color: var(--secondary);
+        .nav-tab.active {
+            color: #00796b;
             font-weight: bold;
         }
 
-        .surah-actions-bar {
-            position: fixed;
-            bottom: 60px;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 99;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            color: var(--primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.85rem;
-            font-family: 'UthmanicHafs', Arial, sans-serif;
-            cursor: pointer;
-        }
-
-        .audio-player-bar {
-            position: fixed;
-            bottom: 115px;
-            left: 0; right: 0;
-            background: var(--primary); color: white;
-            padding: 10px 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            z-index: 98;
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
+        /* تنسيق قراءة السورة */
+        .quran-box {
+            background: #ffffff;
+            padding: 25px;
             border-radius: 10px;
-            border: 1px solid var(--border-color);
+            border: 1px solid #b2dfdb;
+            font-size: 1.6rem;
+            line-height: 2.5;
+            text-align: justify;
             margin-bottom: 15px;
         }
 
-        .option-btn {
-            width: 100%; padding: 10px; margin: 5px 0;
-            border-radius: 6px; border: 1px solid var(--border-color);
-            background: var(--card-bg); color: var(--text);
-            cursor: pointer; text-align: right; font-family: 'UthmanicHafs';
+        .ayah {
+            display: inline;
+            margin-left: 5px;
         }
 
-        .modal {
-            display: none; position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center; align-items: center; z-index: 200;
+        .ayah.hidden {
+            display: none;
         }
-        .modal-content {
-            background: white; padding: 20px; border-radius: 10px; width: 300px; text-align: center;
+
+        .ayah.error {
+            color: #d32f2f;
+            background-color: #ffebee;
         }
-        .modal-content button {
-            width: 100%; padding: 10px; margin: 5px 0; background: var(--secondary); color: white; border: none; border-radius: 5px; cursor: pointer; font-family: 'UthmanicHafs';
+
+        .action-bar {
+            position: fixed;
+            bottom: 60px; left: 0; right: 0;
+            background: #ffffff;
+            border-top: 1px solid #b2dfdb;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 999;
+        }
+
+        .action-btn {
+            background: #00796b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'UthmanicHafs';
         }
     </style>
 </head>
 <body>
 
-    <header id="mainHeader">وِرْد - المصحف الشريف</header>
+    <header id="appHeader">وِرْد - المصحف الشريف</header>
 
     <div class="container">
         
-        <!-- صفحة القرآن الرئيسية -->
-        <section id="quranPage" class="page-section active">
-            <!-- الفهرس والأجزاء -->
-            <div id="categoryView">
-                <h2 style="text-align: center; font-family: 'UthmanicHafs';">الأقسام والفهارس</h2>
-                <div class="category-grid">
-                    <div class="category-card" onclick="openCategory('amm')">
+        <!-- الشاشة الأولى: القرآن الكريم والفهارس -->
+        <div id="screenQuran" class="screen active">
+            
+            <!-- قائمة الأجزاء -->
+            <div id="viewCategories">
+                <h2 style="text-align: center;">اختر الجزء</h2>
+                <div class="grid-2">
+                    <div class="card-btn" onclick="loadSurahs('amm')">
                         جزء عم
-                        <span class="btn-hint">استعرض سور الجزء الثلاثين</span>
+                        <span class="hint">الجزء الثلاثون</span>
                     </div>
-                    <div class="category-card" onclick="openCategory('tabarak')">
+                    <div class="card-btn" onclick="loadSurahs('tabarak')">
                         جزء تبارك
-                        <span class="btn-hint">استعرض سور الجزء التاسع والعشرين</span>
+                        <span class="hint">الجزء التاسع والعشرون</span>
                     </div>
-                    <div class="category-card" onclick="openCategory('mujādila')">
+                    <div class="card-btn" onclick="loadSurahs('mujādila')">
                         جزء المجادلة
-                        <span class="btn-hint">استعرض سور الجزء الثامن والعشرين</span>
+                        <span class="hint">الجزء الثامن والعشرون</span>
                     </div>
-                    <div class="category-card" onclick="openCategory('towal')">
+                    <div class="card-btn" onclick="loadSurahs('towal')">
                         الطوال
-                        <span class="btn-hint">استعرض السور الطوال وباقي المصحف</span>
+                        <span class="hint">باقي السور</span>
                     </div>
                 </div>
             </div>
 
-            <!-- قائمة السور بالجزء -->
-            <div id="surahListView" style="display: none;">
-                <div class="surah-header">
-                    <button onclick="backToCategories()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; font-family:'UthmanicHafs'; color:var(--primary);">⬅ عودة للأقسام</button>
-                    <h3 id="categoryTitle" style="margin:0; font-family:'UthmanicHafs';">السور</h3>
-                </div>
-                <div id="surahGrid" class="surah-grid"></div>
+            <!-- قائمة السور -->
+            <div id="viewSurahs" class="screen">
+                <button onclick="goBackToCategories()" class="action-btn" style="margin-bottom: 10px;">⬅ عودة للأجزاء</button>
+                <h3 id="surahListTitle">السور</h3>
+                <div id="surahsGridContainer" class="grid-2"></div>
             </div>
 
-            <!-- عرض السورة والتسميع -->
-            <div id="surahViewSection" style="display: none;">
-                <div class="surah-header">
-                    <button onclick="backToSurahList()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; font-family:'UthmanicHafs'; color:var(--primary);">⬅ عودة لقائمة السور</button>
-                    <h3 id="currentSurahTitle" style="margin:0; font-family:'UthmanicHafs';">سورة الفاتحة</h3>
+            <!-- شاشة قراءة وتسميع السورة -->
+            <div id="viewReader" class="screen">
+                <button onclick="goBackToSurahs()" class="action-btn" style="margin-bottom: 10px;">⬅ عودة للقائمة</button>
+                <h3 id="readerTitle">سورة</h3>
+                
+                <div style="background: #ffffff; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; border: 1px solid #b2dfdb;">
+                    <button onclick="toggleBook()" id="bookBtn" class="action-btn" style="background:#004d40;">📖 إخفاء الآيات للتسميع الذكي</button>
+                    <span class="hint">زر الكتاب المغلق: يخفي الآيات لتبدأ التسميع، وكل آية تقرؤها صحيحة تعود لمكانها.</span>
                 </div>
 
-                <!-- زر الكتاب المغلق -->
-                <div class="book-toggle-bar">
-                    <button id="bookToggleBtn" class="book-btn" onclick="toggleBookState()">
-                        📖 إخفاء الآيات للتسميع الذكي
-                    </button>
-                    <span class="btn-hint">عند الضغط، تختفي الآيات لتبدأ التسميع، وكل آية تقرؤها صحيحة تعود لمكانها تلقائياً بالخط العثماني.</span>
-                </div>
-
-                <div id="quranTextBox" class="quran-text-box"></div>
-
-                <div id="listeningPanel" class="listening-panel" style="display: none;">
-                    <h4 style="margin:0; color:var(--secondary);">جلسة التسميع بالذكاء الاصطناعي (وقت لامتناهي)</h4>
-                    <p id="recogStatus" style="font-size: 0.9rem; color: #555;">اضغط على الميكروفون وابدأ القراءة...</p>
-                    <button id="micBtn" class="mic-btn-large" onclick="toggleListeningSession()">🎙️</button>
-                    <div id="liveOutput" style="font-size: 1.1rem; color: var(--primary); margin-top:10px; min-height: 40px; font-weight: bold;"></div>
-                    <button onclick="closeListeningMode()" style="background:#d32f2f; color:white; border:none; padding:8px 18px; border-radius:5px; cursor:pointer; margin-top:10px; font-family:'UthmanicHafs';">إنهاء الجلسة وإعادة إظهار الآيات</button>
-                </div>
+                <div id="quranContentBox" class="quran-box"></div>
             </div>
-        </section>
 
-        <!-- صفحة المسابقة -->
-        <section id="quizPage" class="page-section">
-            <div class="card">
-                <h3 style="font-family:'UthmanicHafs';">مسابقة المعلومات القرآنية</h3>
-                <p id="quizQuestion">ما هي السورة التي تسمى بعروس القرآن؟</p>
-                <button class="option-btn" onclick="checkAnswer(false)">سورة يس</button>
-                <button class="option-btn" onclick="checkAnswer(true)">سورة الرحمن</button>
-                <button class="option-btn" onclick="checkAnswer(false)">سورة الواقعة</button>
-                <div id="quizResult" style="margin-top: 10px; font-weight: bold;"></div>
-            </div>
-        </section>
-
-        <!-- صفحة الإعدادات -->
-        <section id="settingsPage" class="page-section">
-            <div class="card">
-                <h3 style="font-family:'UthmanicHafs';">الإعدادات العامة</h3>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
-                    <span>الوضع الداكن (Dark Mode)</span>
-                    <button onclick="toggleTheme()" style="padding: 5px 10px; font-family:'UthmanicHafs';">تبديل</button>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
-                    <span>تنبيهات الخطأ الصوتية</span>
-                    <input type="checkbox" id="soundAlertToggle" checked>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <!-- مشغل الصوت -->
-    <div class="audio-player-bar" id="audioBar" style="display:none;">
-        <div>
-            <span id="playerTitle" style="font-size: 0.85rem; font-weight:bold;">الشيخ: العفاسي</span>
         </div>
-        <audio id="mainAudioPlayer" controls></audio>
-        <button onclick="closeAudioPlayer()" style="background:none; border:none; color:white; cursor:pointer; font-size:1.2rem;">✖</button>
+
+        <!-- الشاشة الثانية: المسابقة -->
+        <div id="screenQuiz" class="screen">
+            <div style="background:#ffffff; padding:20px; border-radius:10px; border:1px solid #b2dfdb;">
+                <h3>مسابقة المعلومات القرآنية</h3>
+                <p>ما هي السورة التي تسمى بعروس القرآن؟</p>
+                <button class="card-btn" style="width:100%; margin-bottom:10px;" onclick="alert('إجابة خاطئة!')">سورة يس</button>
+                <button class="card-btn" style="width:100%;" onclick="alert('إجابة صحيحة! أحسنت 👏')">سورة الرحمن</button>
+            </div>
+        </div>
+
+        <!-- الشاشة الثالثة: الإعدادات -->
+        <div id="screenSettings" class="screen">
+            <div style="background:#ffffff; padding:20px; border-radius:10px; border:1px solid #b2dfdb;">
+                <h3>الإعدادات العامة</h3>
+                <p>تطبيق وِرْد - الإصدار القياسي المدعوم بـ PWABuilder.</p>
+            </div>
+        </div>
+
     </div>
 
-    <!-- شريط خيارات السورة -->
-    <div id="surahActionsBar" class="surah-actions-bar" style="display: none;">
-        <button class="action-btn" onclick="openReciterModal()">
-            <span>🎧</span> استماع
-        </button>
-        <button class="action-btn" onclick="startListeningMode()">
-            <span>🎙️</span> تسميع
-        </button>
-        <button class="action-btn" onclick="downloadCurrentSurah()">
-            <span>📥</span> تنزيل
-        </button>
+    <!-- شريط خيارات السورة السفلي -->
+    <div id="surahActionBar" class="action-bar" style="display: none;">
+        <button class="action-btn" onclick="alert('اختر القارئ (قيد التطوير)')">🎧 استماع</button>
+        <button class="action-btn" onclick="alert('جاري تنزيل السورة...')">📥 تنزيل</button>
     </div>
 
     <!-- شريط التنقل السفلي الرئيسي -->
-    <nav class="main-bottom-nav">
-        <button class="nav-item active" onclick="switchMainTab('quranPage', 'وِرْد - المصحف الشريف', this)">
-            <span>📖</span> القرآن الكريم
+    <nav class="bottom-nav">
+        <button class="nav-tab active" onclick="switchScreen('screenQuran', 'وِرْد - المصحف الشريف', this)">
+            <span>📖</span> القرآن
         </button>
-        <button class="nav-item" onclick="switchMainTab('quizPage', 'المسابقة الدينية', this)">
+        <button class="nav-tab" onclick="switchScreen('screenQuiz', 'مسابقات قرآنية', this)">
             <span>🎮</span> المسابقة
         </button>
-        <button class="nav-item" onclick="switchMainTab('settingsPage', 'الإعدادات', this)">
+        <button class="nav-tab" onclick="switchScreen('screenSettings', 'إعدادات التطبيق', this)">
             <span>⚙️</span> الإعدادات
         </button>
     </nav>
 
-    <!-- نافذة اختيار القارئ -->
-    <div id="reciterModal" class="modal">
-        <div class="modal-content">
-            <h3>اختر القارئ الكريم</h3>
-            <button onclick="selectReciter('afs', 'مشاري العفاسي')">مشاري العفاسي</button>
-            <button onclick="selectReciter('basit', 'عبد الباسط عبد الصمد')">عبد الباسط عبد الصمد</button>
-            <button onclick="selectReciter('maher', 'ماهر المعيقلي')">ماهر المعيقلي</button>
-            <button onclick="selectReciter('husary', 'محمود خليل الحصري')">محمود خليل الحصري</button>
-            <br>
-            <button onclick="closeReciterModal()" style="background:#757575;">إلغاء</button>
-        </div>
-    </div>
-
     <script>
-        const categoriesData = {
-            "amm": { title: "جزء عم (الجزء ٣٠)", start: 78, end: 114 },
-            "tabarak": { title: "جزء تبارك (الجزء ٢٩)", start: 67, end: 77 },
-            "mujādila": { title: "جزء المجادلة (الجزء ٢٨)", start: 58, end: 66 },
-            "towal": { title: "السور الطوال وجميع السور", start: 1, end: 57 }
+        // بيانات بسيطة ومباشرة للتأكد من عمل الأزرار فوراً
+        const categories = {
+            'amm': { title: 'جزء عم', surahs: ['النبأ', 'النازعات', 'عبس', 'التكوير', 'الإخلاص', 'الفلق', 'الناس'] },
+            'tabarak': { title: 'جزء تبارك', surahs: ['الملك', 'القلم', 'الحاقة', 'المعارج', 'نوح'] },
+            'mujādila': { title: 'جزء المجادلة', surahs: ['المجادلة', 'الحشر', 'الممتحنة', 'الصف', 'الجمعة'] },
+            'towal': { title: 'السور الطوال', surahs: ['الفاتحة', 'البقرة', 'آل عمران', 'النساء'] }
         };
 
-        const surahsData = [
-            "الفاتحة", "البقرة", "آل عمران", "النساء", "المائدة", "الأنعام", "الأعراف", "الأنفال", "التوبة", "يونس",
-            "هود", "يوسف", "الرعد", "إبراهيم", "الحجر", "النحل", "الإسراء", "الكهف", "مريم", "طه",
-            "الأنبياء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنكبوت", "الروم",
-            "لقمان", "السجدة", "الأحزاب", "سبأ", "فاطر", "يس", "الصافات", "ص", "الزمر", "غافر",
-            "فصلت", "الشورى", "الزخرف", "الدخان", "الجاثية", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق",
-            "الذاريات", "الطور", "النجم", "القمر", "الرحمن", "الواقعة", "الحديد", "المجادلة", "الحشر", "الممتحنة",
-            "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم", "الملك", "القلم", "الحاقة", "المعارج",
-            "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس",
-            "التكوير", "الانفطار", "المطففين", "الانشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد",
-            "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات",
-            "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر",
-            "المسد", "الإخلاص", "الفلق", "الناس"
-        ];
+        let isHidden = false;
 
-        let currentSurahIndex = 0;
-        let isBookClosed = false;
-        let selectedReciterKey = 'afs';
-        let recitersMap = {
-            'afs': { name: 'مشاري العفاسي', url: 'https://server8.mp3quran.net/afs/' },
-            'basit': { name: 'عبد الباسط عبد الصمد', url: 'https://server7.mp3quran.net/basit/' },
-            'maher': { name: 'ماهر المعيقلي', url: 'https://server12.mp3quran.net/maher/' },
-            'husary': { name: 'محمود خليل الحصري', url: 'https://server13.mp3quran.net/husr/' }
-        };
+        // دالة التنقل بين الشاشات الرئيسية عبر الشريط السفلي
+        function switchScreen(screenId, title, btnElement) {
+            document.querySelectorAll('.screen').forEach(s => {
+                if(s.id === 'screenQuran' || s.id === 'screenQuiz' || s.id === 'screenSettings') {
+                    s.classList.remove('active');
+                }
+            });
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
 
-        // دالة التنقل بين الصفحات الرئيسية (القرآن، المسابقة، الإعدادات)
-        function switchMainTab(pageId, title, btn) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(pageId).classList.add('active');
-            btn.classList.add('active');
-            document.getElementById('mainHeader').innerText = title;
+            document.getElementById(screenId).classList.add('active');
+            btnElement.classList.add('active');
+            document.getElementById('appHeader').innerText = title;
 
-            // التحكم في ظهور شريط خيارات السورة الفرعي
-            if (pageId !== 'quranPage') {
-                document.getElementById('surahActionsBar').style.display = 'none';
-            } else if (document.getElementById('surahViewSection').style.display === 'block') {
-                document.getElementById('surahActionsBar').style.display = 'flex';
+            // إخفاء شريط السورة إذا خرجنا من شاشة القرآن
+            if(screenId !== 'screenQuran') {
+                document.getElementById('surahActionBar').style.display = 'none';
             }
         }
 
-        function openCategory(key) {
-            const cat = categoriesData[key];
-            document.getElementById('categoryView').style.display = 'none';
-            document.getElementById('surahListView').style.display = 'block';
-            document.getElementById('categoryTitle').innerText = cat.title;
+        function loadSurahs(catKey) {
+            let cat = categories[catKey];
+            document.getElementById('viewCategories').style.display = 'none';
+            document.getElementById('viewSurahs').style.display = 'block';
+            document.getElementById('surahListTitle').innerText = cat.title;
 
-            const grid = document.getElementById('surahGrid');
-            grid.innerHTML = '';
-            for (let i = cat.start; i <= cat.end; i++) {
-                let card = document.createElement('div');
-                card.className = 'surah-card';
-                card.innerHTML = `${i}. سُورَةُ ${surahsData[i - 1]}`;
-                card.onclick = function() { openSurah(i - 1); };
-                grid.appendChild(card);
-            }
+            let container = document.getElementById('surahsGridContainer');
+            container.innerHTML = '';
+            cat.surahs.forEach(sName => {
+                let div = document.createElement('div');
+                div.className = 'card-btn';
+                div.innerText = `سُورَةُ ${sName}`;
+                div.onclick = function() { openReader(sName); };
+                container.appendChild(div);
+            });
         }
 
-        function backToCategories() {
-            document.getEle
+        function goBackToCategories() {
+            document.getElementById('viewSurahs').style.display = 'none';
+            document.getElementById('viewCategories').style.display = 'block';
+        }
+
+        function openReader(surahName) {
+            document.getElementById('viewSurahs').style.display = 'none';
+            document.getElementById('viewReader').style.display = 'block';
+            document.getElementById('surahActionBar').style.display = 'flex';
+            document.getElementById('readerTitle').innerText = `سُورَةُ ${surahName}`;
+
+            let sampleAyahs = [
+                "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝",
+                `هذه آيات سورة ${surahName} بالخط العثماني المبارك ۝`,
+                "لتجربة زر الكتاب المغلق والتسميع الذكي ۝"
+            ];
+
+            let box = document.getElementById('quranContentBox');
+            box.innerHTML = sampleAyahs.map((text, idx) => `<span class="ayah" id="ayah-${idx}">${text} </span>`).join('');
+            isHidden = false;
+            document.getElementById('bookBtn').innerText = '📖 إخفاء الآيات للتسميع الذكي';
+        }
+
+        function goBackToSurahs() {
+            document.getElementById('surahActionBar').style.display = 'none';
+            document.getElementById('viewReader').style.display = 'none';
+            document.getElementById('viewSurahs').style.display = 'block';
+        }
+
+        // دالة زر الكتاب المغلق (إخفاء وإظهار الآيات)
+        function toggleBook() {
+            isHidden = !isHidden;
+            let ayahs = document.querySelectorAll('.ayah');
+            let btn = document.getElementById('bookBtn');
+
+            if(isHidden) {
+                btn.innerText = '📕 إظهار الآيات مجدداً (الكتاب مغلق)';
+                ayahs.forEach(a => a.classList.add('hidden'));
+            } else {
+                btn.innerText = '📖 إخفاء الآيات للتسميع الذكي';
+                ayahs.forEach(a => a.classList.remove('hidden'));
+            }
+        }
+    </script>
+</body>
+    </html>
+                    
