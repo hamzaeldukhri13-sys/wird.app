@@ -22,12 +22,15 @@
     </header>
 
     <!-- الأزرار الرئيسية -->
-    <nav class="flex justify-around bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-2 text-xs md:text-sm">
-        <button onclick="switchTab('quran')" class="tab-btn font-bold text-emerald-600 dark:text-emerald-400 py-2 px-3">القرآن</button>
-        <button onclick="switchTab('athkar')" class="tab-btn py-2 px-3 text-slate-600 dark:text-slate-300">الأذكار</button>
-        <button onclick="switchTab('chain')" class="tab-btn py-2 px-3 text-slate-600 dark:text-slate-300">سلسلة الأجر 🔗</button>
-        <button onclick="switchTab('about')" class="tab-btn py-2 px-3 text-slate-600 dark:text-slate-300">عن التطبيق 📄</button>
-        <button onclick="switchTab('privacy')" class="tab-btn py-2 px-3 text-slate-600 dark:text-slate-300">الخصوصية 🔒</button>
+    <nav class="flex gap-1 overflow-x-auto bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-2 text-xs md:text-sm">
+        <button onclick="switchTab('quran')" class="tab-btn shrink-0 whitespace-nowrap font-bold text-emerald-600 dark:text-emerald-400 py-2 px-3">القرآن</button>
+        <button onclick="switchTab('athkar')" class="tab-btn shrink-0 whitespace-nowrap py-2 px-3 text-slate-600 dark:text-slate-300">الأذكار</button>
+        <button onclick="switchTab('chain')" class="tab-btn shrink-0 whitespace-nowrap py-2 px-3 text-slate-600 dark:text-slate-300">سلسلة الأجر 🔗</button>
+        <button onclick="switchTab('calories')" class="tab-btn shrink-0 whitespace-nowrap py-2 px-3 text-slate-600 dark:text-slate-300">السعرات</button>
+        <button onclick="switchTab('macros')" class="tab-btn shrink-0 whitespace-nowrap py-2 px-3 text-slate-600 dark:text-slate-300">المغذيات</button>
+        <button onclick="switchTab('articles')" class="tab-btn shrink-0 whitespace-nowrap py-2 px-3 text-slate-600 dark:text-slate-300">مقالات صحية</button>
+        <button onclick="switchTab('about')" class="tab-btn shrink-0 whitespace-nowrap py-2 px-3 text-slate-600 dark:text-slate-300">عن التطبيق 📄</button>
+        <button onclick="switchTab('privacy')" class="tab-btn shrink-0 whitespace-nowrap py-2 px-3 text-slate-600 dark:text-slate-300">الخصوصية 🔒</button>
     </nav>
 
     <!-- المحتوى الرئيسي (زيادة الهامش السفلي pb-32 لإعطاء مساحة كافية فوق الإعلان الكبيرة) -->
@@ -96,6 +99,106 @@
             </div>
         </div>
 
+        <!-- قسم حاسبة السعرات -->
+        <div id="tab-calories" class="hidden space-y-4">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+                <div>
+                    <h2 class="font-bold text-emerald-700 dark:text-emerald-400">حاسبة السعرات الحرارية</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">تعتمد على معادلة Mifflin-St Jeor لحساب معدل الأيض الأساسي.</p>
+                </div>
+                <form id="calorie-form" class="space-y-3" onsubmit="calculateCalories(event)">
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="space-y-1">
+                            <span class="block text-xs font-semibold text-slate-600 dark:text-slate-400">الجنس</span>
+                            <select id="cal-gender" class="w-full text-sm p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500">
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                        </label>
+                        <label class="space-y-1">
+                            <span class="block text-xs font-semibold text-slate-600 dark:text-slate-400">العمر (سنة)</span>
+                            <input id="cal-age" type="number" min="10" max="100" required class="w-full text-sm p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500">
+                        </label>
+                        <label class="space-y-1">
+                            <span class="block text-xs font-semibold text-slate-600 dark:text-slate-400">الوزن (كغ)</span>
+                            <input id="cal-weight" type="number" min="30" max="300" step="0.1" required class="w-full text-sm p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500">
+                        </label>
+                        <label class="space-y-1">
+                            <span class="block text-xs font-semibold text-slate-600 dark:text-slate-400">الطول (سم)</span>
+                            <input id="cal-height" type="number" min="100" max="250" required class="w-full text-sm p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500">
+                        </label>
+                    </div>
+                    <label class="block space-y-1">
+                        <span class="block text-xs font-semibold text-slate-600 dark:text-slate-400">مستوى النشاط البدني</span>
+                        <select id="cal-activity" class="w-full text-sm p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500">
+                            <option value="sedentary">خامل (عمل مكتبي، بدون تمارين)</option>
+                            <option value="light">نشاط خفيف (تمارين 1-3 أيام)</option>
+                            <option value="moderate">نشاط متوسط (تمارين 3-5 أيام)</option>
+                            <option value="active">نشاط عالٍ (تمارين 6-7 أيام)</option>
+                            <option value="very_active">نشاط مرتفع جداً (عمل بدني + تمارين)</option>
+                        </select>
+                    </label>
+                    <label class="block space-y-1">
+                        <span class="block text-xs font-semibold text-slate-600 dark:text-slate-400">هدفك</span>
+                        <select id="cal-goal" class="w-full text-sm p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500">
+                            <option value="lose">خسارة الوزن (-500 سعرة يومياً)</option>
+                            <option value="maintain">تثبيت الوزن</option>
+                            <option value="gain">زيادة الوزن (+300 سعرة يومياً)</option>
+                        </select>
+                    </label>
+                    <p id="cal-error" class="hidden text-xs text-red-600 dark:text-red-400"></p>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-lg shadow transition-colors">احسب السعرات</button>
+                </form>
+            </div>
+
+            <div id="cal-result" class="hidden bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 rounded-xl shadow-lg space-y-3">
+                <div class="text-xs opacity-90">احتياجك اليومي لهدفك:</div>
+                <div class="text-center">
+                    <span id="res-target" class="text-4xl font-bold">0</span>
+                    <span class="text-sm opacity-90">سعرة / يوم</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-center pt-1">
+                    <div class="bg-white/10 p-2 rounded-lg">
+                        <div class="text-xs opacity-80">معدل الأيض الأساسي</div>
+                        <div id="res-bmr" class="text-lg font-bold">0</div>
+                    </div>
+                    <div class="bg-white/10 p-2 rounded-lg">
+                        <div class="text-xs opacity-80">الاستهلاك اليومي للحفاظ على الوزن</div>
+                        <div id="res-tdee" class="text-lg font-bold">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم توزيع المغذيات -->
+        <div id="tab-macros" class="hidden space-y-4">
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+                <div>
+                    <h2 class="font-bold text-emerald-700 dark:text-emerald-400">توزيع المغذيات اليومي</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">حصص البروتين والكربوهيدرات والدهون بناءً على سعراتك اليومية.</p>
+                </div>
+                <p id="macro-empty" class="hidden text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-lg">احسب سعراتك أولاً من تبويب السعرات لعرض توزيع المغذيات.</p>
+                <div id="macro-body" class="hidden space-y-3">
+                    <label class="block space-y-1">
+                        <span class="block text-xs font-semibold text-slate-600 dark:text-slate-400">نمط التوزيع</span>
+                        <select id="macro-preset" onchange="renderMacros()" class="w-full text-sm p-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg focus:outline-none focus:border-emerald-500">
+                            <option value="balanced">متوازن (30% بروتين، 40% كربوهيدرات، 30% دهون)</option>
+                            <option value="high-protein">عالي البروتين (40% بروتين، 30% كربوهيدرات، 30% دهون)</option>
+                            <option value="low-carb">منخفض الكربوهيدرات (30% بروتين، 20% كربوهيدرات، 50% دهون)</option>
+                        </select>
+                    </label>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">هدفك اليومي: <span id="macro-kcal" class="font-bold text-emerald-700 dark:text-emerald-400">0</span> سعرة</p>
+                    <div id="macro-cards" class="space-y-2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم المقالات الصحية -->
+        <div id="tab-articles" class="hidden space-y-4">
+            <h2 class="text-lg font-semibold text-emerald-700 dark:text-emerald-400">مقالات صحية</h2>
+            <div id="articles-list" class="space-y-2"></div>
+        </div>
+
         <!-- عن التطبيق -->
         <div id="tab-about" class="hidden space-y-4">
             <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-3 text-xs leading-relaxed">
@@ -131,6 +234,17 @@
         </div>
     </div>
 
+    <!-- نافذة قراءة المقال -->
+    <div id="article-modal" class="hidden fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-lg max-h-[80vh] rounded-2xl flex flex-col p-4 shadow-xl">
+            <div class="flex justify-between items-center border-b pb-2 dark:border-slate-700">
+                <h3 id="article-title" class="font-bold text-lg text-emerald-700 dark:text-emerald-400"></h3>
+                <button onclick="closeArticle()" class="text-slate-400 hover:text-red-500 font-bold text-lg px-2">✕</button>
+            </div>
+            <div id="article-body" class="flex-1 overflow-y-auto p-4 space-y-3 text-sm leading-[1.5] text-slate-700 dark:text-slate-200"></div>
+        </div>
+    </div>
+
     <!-- نافذة قراءة السورة -->
     <div id="reader-modal" class="hidden fixed inset-0 bg-black/70 flex justify-center items-center p-4 z-50">
         <div class="bg-white dark:bg-slate-800 w-full max-w-lg h-[80vh] rounded-2xl flex flex-col p-4 shadow-xl">
@@ -146,10 +260,11 @@
 
     <script>
         function switchTab(tabName) {
-            ['quran', 'athkar', 'chain', 'about', 'privacy'].forEach(tab => {
+            ['quran', 'athkar', 'chain', 'calories', 'macros', 'articles', 'about', 'privacy'].forEach(tab => {
                 document.getElementById('tab-' + tab).classList.add('hidden');
             });
             document.getElementById('tab-' + tabName).classList.remove('hidden');
+            if (tabName === 'macros') renderMacros();
         }
 
         function toggleDarkMode() {
@@ -318,8 +433,181 @@
             }
         }
 
+        const NUTRITION_PROFILE_KEY = 'wird_nutrition_profile';
+        const ACTIVITY_FACTORS = { sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725, very_active: 1.9 };
+        const GOAL_ADJUSTMENTS = { lose: -500, maintain: 0, gain: 300 };
+        const MIN_DAILY_TARGET = { male: 1500, female: 1200 };
+        const MACRO_PRESETS = {
+            balanced: { protein: 30, carbs: 40, fat: 30 },
+            'high-protein': { protein: 40, carbs: 30, fat: 30 },
+            'low-carb': { protein: 30, carbs: 20, fat: 50 }
+        };
+        const MACRO_LABELS = { protein: 'البروتين', carbs: 'الكربوهيدرات', fat: 'الدهون' };
+        const MACRO_KCAL_PER_GRAM = { protein: 4, carbs: 4, fat: 9 };
+        const ARTICLES = [
+            {
+                title: 'الألياف والشبع: لماذا تهم؟',
+                summary: 'كيف تساعدك الألياف على الشعور بالشبع لفترة أطول وتنظيم الهضم.',
+                body: [
+                    'الألياف الغذائية جزء من الطعام لا يهضمه الجسم، لكنها تلعب دوراً مهماً في الصحة. تمر الألياف عبر الجهاز الهضمي دون أن تتحول إلى سكر، وتبقى في المعدة فترة أطول، مما يمنح إحساساً بالشبع ويقلل الرغبة في تناول الوجبات الخفيفة.',
+                    'تنقسم الألياف إلى نوعين رئيسيين: الألياف القابلة للذوبان، وتوجد في الشوفان والبقوليات والتفاح والحمضيات، وتشكل مادة هلامية تبطئ امتصاص السكر والدهون. أما الألياف غير القابلة للذوبان، فتوجد في الحبوب الكاملة والخضراوات، وتساعد على انتظام حركة الأمعاء والوقاية من الإمساك.',
+                    'يوصي خبراء التغذية عموماً بأن يتناول البالغون بين 25 و38 غراماً من الألياف يومياً حسب العمر والجنس. ويمكن الوصول إلى هذه الكمية تدريجياً بإضافة حصة من الخضراوات إلى كل وجبة، واستبدال الخبز الأبيض بالخبز الأسمر، وتناول الفاكهة بدلاً من العصائر.',
+                    'تذكر أن زيادة الألياف بسرعة قد تسبب انتفاخاً، لذا ينصح بزيادتها تدريجياً مع شرب كمية كافية من الماء.'
+                ]
+            },
+            {
+                title: 'البروتين ودوره في بناء العضلات',
+                summary: 'لماذا يعد البروتين أساسياً للحفاظ على الكتلة العضلية أثناء خسارة الوزن.',
+                body: [
+                    'البروتين يتكون من أحماض أمينية يحتاجها الجسم لبناء الأنسجة وإصلاحها، ومنها العضلات. عند اتباع نظام غذائي لخسارة الوزن، يساعد تناول كمية كافية من البروتين على الحفاظ على الكتلة العضلية بدلاً من فقدانها.',
+                    'يحتاج الشخص النشيط عادة إلى ما بين 1.2 و2 غرام من البروتين لكل كيلوغرام من وزن الجسم يومياً، بحسب مستوى النشاط والهدف. ومن المصادر الجيدة البيض والدجاج والسمك والبقوليات والزبادي اليوناني.',
+                    'يفضل توزيع البروتين على وجبات اليوم بدلاً من تركيزه في وجبة واحدة، فذلك يساعد الجسم على الاستفادة منه بشكل أفضل ويمنح شبعاً أطول.'
+                ]
+            },
+            {
+                title: 'الماء وتأثيره على الصحة اليومية',
+                summary: 'دور الترطيب في الطاقة والتركيز والتحكم في الشهية.',
+                body: [
+                    'يشكل الماء نسبة كبيرة من وزن الجسم، ويشارك في تنظيم حرارة الجسم ونقل العناصر الغذائية والتخلص من الفضلات. حتى الجفاف الخفيف قد يؤثر في التركيز والطاقة والمزاج.',
+                    'قد يخلط الجسم أحياناً بين العطش والجوع، لذا فإن شرب كوب من الماء قبل الوجبة قد يساعد على تقليل الإفراط في الأكل. ويختلف الاحتياج اليومي حسب الطقس والنشاط البدني، لكن الالتزام بالشرب على مدار اليوم هو الأساس.',
+                    'اجعل الماء في متناول يدك طوال اليوم، ولاحظ لون البول كمؤشر بسيط: اللون الفاتح غالباً يدل على ترطيب جيد.'
+                ]
+            }
+        ];
+
+        function getNutritionProfile() {
+            return JSON.parse(localStorage.getItem(NUTRITION_PROFILE_KEY) || 'null');
+        }
+
+        function calculateCalories(event) {
+            event.preventDefault();
+            const gender = document.getElementById('cal-gender').value;
+            const age = Number(document.getElementById('cal-age').value);
+            const weight = Number(document.getElementById('cal-weight').value);
+            const height = Number(document.getElementById('cal-height').value);
+            const activity = document.getElementById('cal-activity').value;
+            const goal = document.getElementById('cal-goal').value;
+            const errorEl = document.getElementById('cal-error');
+
+            const valid = age >= 10 && age <= 100 && weight >= 30 && weight <= 300 && height >= 100 && height <= 250;
+            if (!valid) {
+                errorEl.textContent = 'يرجى إدخال قيم صحيحة: العمر بين 10 و100، والوزن بين 30 و300 كغ، والطول بين 100 و250 سم.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            errorEl.classList.add('hidden');
+
+            const genderOffset = gender === 'male' ? 5 : -161;
+            const bmr = Math.round(10 * weight + 6.25 * height - 5 * age + genderOffset);
+            const tdee = Math.round(bmr * ACTIVITY_FACTORS[activity]);
+            const target = Math.max(MIN_DAILY_TARGET[gender], tdee + GOAL_ADJUSTMENTS[goal]);
+
+            const profile = { gender, bmr, tdee, target };
+            localStorage.setItem(NUTRITION_PROFILE_KEY, JSON.stringify(profile));
+            renderCalorieResult(profile);
+            renderMacros();
+        }
+
+        function renderCalorieResult(profile) {
+            document.getElementById('res-target').textContent = profile.target;
+            document.getElementById('res-bmr').textContent = profile.bmr;
+            document.getElementById('res-tdee').textContent = profile.tdee;
+            document.getElementById('cal-result').classList.remove('hidden');
+        }
+
+        function renderMacros() {
+            const profile = getNutritionProfile();
+            const emptyEl = document.getElementById('macro-empty');
+            const bodyEl = document.getElementById('macro-body');
+            if (!profile) {
+                emptyEl.classList.remove('hidden');
+                bodyEl.classList.add('hidden');
+                return;
+            }
+            emptyEl.classList.add('hidden');
+            bodyEl.classList.remove('hidden');
+
+            const split = MACRO_PRESETS[document.getElementById('macro-preset').value];
+            document.getElementById('macro-kcal').textContent = profile.target;
+
+            const container = document.getElementById('macro-cards');
+            container.innerHTML = '';
+            Object.keys(split).forEach(key => {
+                const percent = split[key];
+                const kcal = profile.target * percent / 100;
+                const grams = Math.round(kcal / MACRO_KCAL_PER_GRAM[key]);
+
+                const row = document.createElement('div');
+                row.className = 'p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700 space-y-2';
+
+                const header = document.createElement('div');
+                header.className = 'flex justify-between items-center text-sm';
+                const name = document.createElement('span');
+                name.className = 'font-bold text-slate-800 dark:text-slate-100';
+                name.textContent = MACRO_LABELS[key];
+                const amount = document.createElement('span');
+                amount.className = 'text-xs font-bold text-emerald-700 dark:text-emerald-300';
+                amount.textContent = `${grams} غرام (${percent}%)`;
+                header.append(name, amount);
+
+                const track = document.createElement('div');
+                track.className = 'h-2 w-full bg-slate-200 dark:bg-slate-600 rounded-full overflow-hidden';
+                const fill = document.createElement('div');
+                fill.className = 'h-full bg-emerald-500 rounded-full transition-all duration-500';
+                fill.style.width = `${percent}%`;
+                track.appendChild(fill);
+
+                row.append(header, track);
+                container.appendChild(row);
+            });
+        }
+
+        function renderArticles() {
+            const list = document.getElementById('articles-list');
+            list.innerHTML = '';
+            ARTICLES.forEach((article, index) => {
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'w-full text-start bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-all space-y-1';
+                const title = document.createElement('div');
+                title.className = 'font-bold text-sm text-slate-800 dark:text-slate-100';
+                title.textContent = article.title;
+                const summary = document.createElement('div');
+                summary.className = 'text-xs text-slate-500 dark:text-slate-400';
+                summary.textContent = article.summary;
+                card.append(title, summary);
+                card.onclick = () => openArticle(index);
+                list.appendChild(card);
+            });
+        }
+
+        function openArticle(index) {
+            const article = ARTICLES[index];
+            document.getElementById('article-title').textContent = article.title;
+            const body = document.getElementById('article-body');
+            body.innerHTML = '';
+            article.body.forEach(paragraph => {
+                const p = document.createElement('p');
+                p.textContent = paragraph;
+                body.appendChild(p);
+            });
+            document.getElementById('article-modal').classList.remove('hidden');
+        }
+
+        function closeArticle() {
+            document.getElementById('article-modal').classList.add('hidden');
+        }
+
+        function loadNutrition() {
+            const profile = getNutritionProfile();
+            if (profile) renderCalorieResult(profile);
+            renderMacros();
+            renderArticles();
+        }
+
         loadSurahs();
         loadChainData();
+        loadNutrition();
     </script>
 </body>
     </html>
